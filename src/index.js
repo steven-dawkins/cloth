@@ -1,8 +1,5 @@
 import "./styles.css";
-
 import * as THREE from "three";
-
-//import * as THREE_ADDONS from 'three-addons';
 import { ParametricGeometry } from './ParametricGeometry';
 
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -34,7 +31,7 @@ var DRAG = 1 - DAMPING;
 var MASS = 0.1;
 var restDistance = 25;
 
-var xSegs = 10;
+var xSegs = 20;
 var ySegs = 10;
 
 var clothFunction = plane(restDistance * xSegs, restDistance * ySegs);
@@ -304,7 +301,7 @@ var pins = [6];
 
 pinsFormation.push(pins);
 
-pins = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+pins = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 pinsFormation.push(pins);
 
 pins = [0];
@@ -445,20 +442,20 @@ function init() {
   var poleMat = new THREE.MeshLambertMaterial();
 
   var mesh = new THREE.Mesh(poleGeo, poleMat);
-  mesh.position.x = -125;
+  mesh.position.x = -125 * xSegs / 10;
   mesh.position.y = -62;
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   scene.add(mesh);
 
   var mesh = new THREE.Mesh(poleGeo, poleMat);
-  mesh.position.x = 125;
+  mesh.position.x = 125 * xSegs / 10;
   mesh.position.y = -62;
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   scene.add(mesh);
 
-  var mesh = new THREE.Mesh(new THREE.BoxGeometry(255, 5, 5), poleMat);
+  var mesh = new THREE.Mesh(new THREE.BoxGeometry(255 * xSegs / 10, 5, 5), poleMat);
   mesh.position.y = -250 + 750 / 2;
   mesh.position.x = 0;
   mesh.receiveShadow = true;
@@ -468,14 +465,14 @@ function init() {
   var gg = new THREE.BoxGeometry(10, 10, 10);
   var mesh = new THREE.Mesh(gg, poleMat);
   mesh.position.y = -250;
-  mesh.position.x = 125;
+  mesh.position.x = 125 * xSegs / 10;
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   scene.add(mesh);
 
   var mesh = new THREE.Mesh(gg, poleMat);
   mesh.position.y = -250;
-  mesh.position.x = -125;
+  mesh.position.x = -125 * xSegs / 10;
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   scene.add(mesh);
