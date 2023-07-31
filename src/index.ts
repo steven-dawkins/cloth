@@ -7,6 +7,7 @@ import Stats from "three/examples/jsm/libs/stats.module";
 // import { GUI } from 'dat.gui'
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Particle } from "./Particle";
 
 /*
  * Cloth Simulation using a relaxed constraints solver
@@ -27,14 +28,14 @@ var params = {
 };
 
 var DAMPING = 0.03;
-var DRAG = 1 - DAMPING;
+export var DRAG = 1 - DAMPING;
 var MASS = 0.1;
 var restDistance = 25;
 
 var xSegs = 20;
 var ySegs = 10;
 
-var clothFunction = plane(restDistance * xSegs, restDistance * ySegs);
+export var clothFunction = plane(restDistance * xSegs, restDistance * ySegs);
 
 var cloth = new Cloth(xSegs, ySegs);
 
@@ -44,7 +45,7 @@ var gravity = new THREE.Vector3(0, -GRAVITY, 0).multiplyScalar(MASS);
 var TIMESTEP = 18 / 1000;
 var TIMESTEP_SQ = TIMESTEP * TIMESTEP;
 
-var pins = [];
+let pins: Array<number> = [];
 
 var windForce = new THREE.Vector3(0, 0, 0);
 
@@ -62,43 +63,6 @@ function plane(width, height) {
     target.set(x, y, z);
   };
 }
-
-function Particle(x, y, z, mass) {
-  this.position = new THREE.Vector3();
-  this.previous = new THREE.Vector3();
-  this.original = new THREE.Vector3();
-  this.a = new THREE.Vector3(0, 0, 0); // acceleration
-  this.mass = mass;
-  this.invMass = 1 / mass;
-  this.tmp = new THREE.Vector3();
-  this.tmp2 = new THREE.Vector3();
-
-  // init
-
-  clothFunction(x, y, this.position); // position
-  clothFunction(x, y, this.previous); // previous
-  clothFunction(x, y, this.original);
-}
-
-// Force -> Acceleration
-
-Particle.prototype.addForce = function (force) {
-  this.a.add(this.tmp2.copy(force).multiplyScalar(this.invMass));
-};
-
-// Performs Verlet integration
-
-Particle.prototype.integrate = function (timesq) {
-  var newPos = this.tmp.subVectors(this.position, this.previous);
-  newPos.multiplyScalar(DRAG).add(this.position);
-  newPos.add(this.a.multiplyScalar(timesq));
-
-  this.tmp = this.previous;
-  this.previous = this.position;
-  this.position = newPos;
-
-  this.a.set(0, 0, 0);
-};
 
 var diff = new THREE.Vector3();
 
@@ -118,8 +82,8 @@ function Cloth(w, h) {
   this.w = w;
   this.h = h;
 
-  var particles = [];
-  var constraints = [];
+  var particles: Array<Particle> = [];
+  var constraints: Array<Array<Particle | number>> = [];
 
   var u, v;
 
@@ -296,8 +260,8 @@ function simulate(now) {
 
 /* testing cloth simulation */
 
-var pinsFormation = [];
-var pins = [6];
+var pinsFormation: Array<Array<number>> = [];
+pins = [6];
 
 pinsFormation.push(pins);
 
@@ -427,7 +391,8 @@ function init() {
 
   var groundMaterial = new THREE.MeshLambertMaterial({ map: groundTexture });
 
-  var mesh = new THREE.Mesh(
+  {
+  const mesh = new THREE.Mesh(
     new THREE.PlaneGeometry(20000, 20000),
     groundMaterial
   );
@@ -435,25 +400,30 @@ function init() {
   mesh.rotation.x = -Math.PI / 2;
   mesh.receiveShadow = true;
   scene.add(mesh);
+}
 
   // poles
 
   var poleGeo = new THREE.BoxGeometry(5, 375, 5);
   var poleMat = new THREE.MeshLambertMaterial();
 
-  var mesh = new THREE.Mesh(poleGeo, poleMat);
+  {
+    const mesh = new THREE.Mesh(poleGeo, poleMat);
   mesh.position.x = -125 * xSegs / 10;
   mesh.position.y = -62;
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   scene.add(mesh);
+  }
 
-  var mesh = new THREE.Mesh(poleGeo, poleMat);
+  {
+    const mesh = new THREE.Mesh(poleGeo, poleMat);
   mesh.position.x = 125 * xSegs / 10;
   mesh.position.y = -62;
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   scene.add(mesh);
+  }
 
   var mesh = new THREE.Mesh(new THREE.BoxGeometry(255 * xSegs / 10, 5, 5), poleMat);
   mesh.position.y = -250 + 750 / 2;
@@ -512,11 +482,11 @@ function init() {
   // gui.add(params, "togglePins").name("Toggle pins");
   //
 
-  if (typeof TESTING !== "undefined") {
-    for (var i = 0; i < 50; i++) {
-      simulate(500 - 10 * i);
-    }
-  }
+  // if (typeof TESTING !== "undefined") {
+  //   for (var i = 0; i < 50; i++) {
+  //     simulate(500 - 10 * i);
+  //   }
+  // }
 }
 
 //
