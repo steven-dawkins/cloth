@@ -2,8 +2,12 @@ import "./styles.css";
 
 import * as THREE from "three";
 
+//import * as THREE_ADDONS from 'three-addons';
+import { ParametricGeometry } from './ParametricGeometry';
+
 import Stats from "three/examples/jsm/libs/stats.module";
-import { GUI } from "three/examples/jsm/libs/dat.gui.module";
+// import { GUI } from "three/examples/jsm/libs/dat.gui.module";
+// import { GUI } from 'dat.gui'
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -386,7 +390,7 @@ function init() {
 
   // cloth geometry
 
-  clothGeometry = new THREE.ParametricBufferGeometry(
+  clothGeometry = new ParametricGeometry(
     clothFunction,
     cloth.w,
     cloth.h
@@ -407,7 +411,7 @@ function init() {
 
   // sphere
 
-  var ballGeo = new THREE.SphereBufferGeometry(ballSize, 32, 16);
+  var ballGeo = new THREE.SphereGeometry(ballSize, 32, 16);
   var ballMaterial = new THREE.MeshLambertMaterial();
 
   sphere = new THREE.Mesh(ballGeo, ballMaterial);
@@ -427,7 +431,7 @@ function init() {
   var groundMaterial = new THREE.MeshLambertMaterial({ map: groundTexture });
 
   var mesh = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(20000, 20000),
+    new THREE.PlaneGeometry(20000, 20000),
     groundMaterial
   );
   mesh.position.y = -250;
@@ -437,7 +441,7 @@ function init() {
 
   // poles
 
-  var poleGeo = new THREE.BoxBufferGeometry(5, 375, 5);
+  var poleGeo = new THREE.BoxGeometry(5, 375, 5);
   var poleMat = new THREE.MeshLambertMaterial();
 
   var mesh = new THREE.Mesh(poleGeo, poleMat);
@@ -454,14 +458,14 @@ function init() {
   mesh.castShadow = true;
   scene.add(mesh);
 
-  var mesh = new THREE.Mesh(new THREE.BoxBufferGeometry(255, 5, 5), poleMat);
+  var mesh = new THREE.Mesh(new THREE.BoxGeometry(255, 5, 5), poleMat);
   mesh.position.y = -250 + 750 / 2;
   mesh.position.x = 0;
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   scene.add(mesh);
 
-  var gg = new THREE.BoxBufferGeometry(10, 10, 10);
+  var gg = new THREE.BoxGeometry(10, 10, 10);
   var mesh = new THREE.Mesh(gg, poleMat);
   mesh.position.y = -250;
   mesh.position.x = 125;
@@ -505,10 +509,10 @@ function init() {
 
   //
 
-  var gui = new GUI();
-  gui.add(params, "enableWind").name("Enable wind");
-  gui.add(params, "showBall").name("Show ball");
-  gui.add(params, "togglePins").name("Toggle pins");
+  // var gui = new GUI();
+  // gui.add(params, "enableWind").name("Enable wind");
+  // gui.add(params, "showBall").name("Show ball");
+  // gui.add(params, "togglePins").name("Toggle pins");
   //
 
   if (typeof TESTING !== "undefined") {
