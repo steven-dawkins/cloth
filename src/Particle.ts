@@ -1,5 +1,8 @@
 import * as THREE from "three";
-import { clothFunction, DRAG } from ".";
+import { clothFunction } from ".";
+
+var DAMPING = 0.03;
+var DRAG = 1 - DAMPING;
 
 export class Particle {
   tmp: THREE.Vector3;
