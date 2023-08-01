@@ -3,8 +3,7 @@ import * as THREE from "three";
 import { ParametricGeometry } from './ParametricGeometry';
 
 import Stats from "three/examples/jsm/libs/stats.module";
-// import { GUI } from "three/examples/jsm/libs/dat.gui.module";
-// import { GUI } from 'dat.gui'
+import { GUI } from 'dat.gui'
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Particle } from "./Particle";
@@ -82,8 +81,8 @@ function Cloth(w, h) {
   this.w = w;
   this.h = h;
 
-  var particles: Array<Particle> = [];
-  var constraints: Array<Array<Particle | number>> = [];
+  const particles: Array<Particle> = [];
+  const constraints: Array<[Particle, Particle, number]> = [];
 
   var u, v;
 
@@ -476,11 +475,11 @@ function init() {
 
   //
 
-  // var gui = new GUI();
-  // gui.add(params, "enableWind").name("Enable wind");
-  // gui.add(params, "showBall").name("Show ball");
-  // gui.add(params, "togglePins").name("Toggle pins");
-  //
+  var gui = new GUI();
+  gui.add(params, "enableWind").name("Enable wind");
+  gui.add(params, "showBall").name("Show ball");
+  gui.add(params, "togglePins").name("Toggle pins");
+  
 
   // if (typeof TESTING !== "undefined") {
   //   for (var i = 0; i < 50; i++) {
