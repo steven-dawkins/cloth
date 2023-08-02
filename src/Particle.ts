@@ -1,8 +1,13 @@
 import * as THREE from "three";
-import { clothFunction } from ".";
+import { restDistance } from "./Cloth";
 
 var DAMPING = 0.03;
 var DRAG = 1 - DAMPING;
+
+export const xSegs = 20;
+export const ySegs = 10;
+
+export var clothFunction = plane(restDistance * xSegs, restDistance * ySegs);
 
 export class Particle {
   tmp: THREE.Vector3;
@@ -14,7 +19,7 @@ export class Particle {
   invMass: number;
   tmp2: THREE.Vector3;
 
-  constructor(x, y, z, mass: number) {
+  constructor(x: number, y: number, z: number, mass: number) {
     this.position = new THREE.Vector3();
     this.previous = new THREE.Vector3();
     this.original = new THREE.Vector3();
@@ -47,4 +52,20 @@ export class Particle {
 
     this.a.set(0, 0, 0);
   }
+}
+
+
+
+function plane(width: number, height: number) {
+  return function (u: number, v: number, target) {
+    var x = (u - 0.5) * width;
+    var y = (v + 0.5) * height;
+    var z = 50;
+
+    x = (Math.sin(u * 2 * Math.PI) - 0.5) * width/2;
+    y = (v + 0.5) * height;
+    z = (Math.cos(u * 2 * Math.PI) - 0.5) * width/2;
+
+    target.set(x, y, z);
+  };
 }

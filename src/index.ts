@@ -6,8 +6,9 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { GUI } from 'dat.gui'
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Particle } from "./Particle";
+import { Particle, clothFunction, xSegs, ySegs } from "./Particle";
 import { MASS, ballSize, simulate } from "./simulate";
+import { Cloth, restDistance } from "./Cloth";
 
 /*
  * Cloth Simulation using a relaxed constraints solver
@@ -21,19 +22,12 @@ import { MASS, ballSize, simulate } from "./simulate";
 // http://cg.alexandra.dk/tag/spring-mass-system/
 // Real-time Cloth Animation http://www.darwin3d.com/gamedev/articles/col0599.pdf
 
-var params = {
+const params = {
   enableWind: false,
   showBall: false,
   togglePins: togglePins
 };
 
-
-var restDistance = 25;
-
-var xSegs = 20;
-var ySegs = 10;
-
-export var clothFunction = plane(restDistance * xSegs, restDistance * ySegs);
 
 var cloth = new Cloth(xSegs, ySegs);
 
@@ -42,102 +36,7 @@ let pins: Array<number> = [];
 var ballPosition = new THREE.Vector3(0, -45, 0);
 
 
-function plane(width, height) {
-  return function (u, v, target) {
-    var x = (u - 0.5) * width;
-    var y = (v + 0.5) * height;
-    var z = 0;
 
-    target.set(x, y, z);
-  };
-}
-
-
-function Cloth(w, h) {
-  w = w || 10;
-  h = h || 10;
-  this.w = w;
-  this.h = h;
-
-  const particles: Array<Particle> = [];
-  const constraints: Array<[Particle, Particle, number]> = [];
-
-  var u, v;
-
-  // Create particles
-  for (v = 0; v <= h; v++) {
-    for (u = 0; u <= w; u++) {
-      particles.push(new Particle(u / w, v / h, 0, MASS));
-    }
-  }
-
-  // Structural
-
-  for (v = 0; v < h; v++) {
-    for (u = 0; u < w; u++) {
-      constraints.push([
-        particles[index(u, v)],
-        particles[index(u, v + 1)],
-        restDistance
-      ]);
-
-      constraints.push([
-        particles[index(u, v)],
-        particles[index(u + 1, v)],
-        restDistance
-      ]);
-    }
-  }
-
-  for (u = w, v = 0; v < h; v++) {
-    constraints.push([
-      particles[index(u, v)],
-      particles[index(u, v + 1)],
-      restDistance
-    ]);
-  }
-
-  for (v = h, u = 0; u < w; u++) {
-    constraints.push([
-      particles[index(u, v)],
-      particles[index(u + 1, v)],
-      restDistance
-    ]);
-  }
-
-  // While many systems use shear and bend springs,
-  // the relaxed constraints model seems to be just fine
-  // using structural springs.
-  // Shear
-  // var diagonalDist = Math.sqrt(restDistance * restDistance * 2);
-
-  // for (v=0;v<h;v++) {
-  // 	for (u=0;u<w;u++) {
-
-  // 		constraints.push([
-  // 			particles[index(u, v)],
-  // 			particles[index(u+1, v+1)],
-  // 			diagonalDist
-  // 		]);
-
-  // 		constraints.push([
-  // 			particles[index(u+1, v)],
-  // 			particles[index(u, v+1)],
-  // 			diagonalDist
-  // 		]);
-
-  // 	}
-  // }
-
-  this.particles = particles;
-  this.constraints = constraints;
-
-  function index(u, v) {
-    return u + v * (w + 1);
-  }
-
-  this.index = index;
-}
 
 /* testing cloth simulation */
 
